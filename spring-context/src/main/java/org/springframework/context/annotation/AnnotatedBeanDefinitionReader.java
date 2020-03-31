@@ -213,18 +213,26 @@ public class AnnotatedBeanDefinitionReader {
 	 */
 	<T> void doRegisterBean(Class<T> beanClass, @Nullable Supplier<T> instanceSupplier, @Nullable String name,
 			@Nullable Class<? extends Annotation>[] qualifiers, BeanDefinitionCustomizer... definitionCustomizers) {
-
+		//根据指定的Bean 创建 AnnotatedGenericBeanDefinition
+		//AnnotatedGenericBeanDefinition 包含了类的其他信息 一些元信息
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
+		/**
+		 * 判断这个类是否需要解析 主要判断有没有注解
+		 */
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
 
 		abd.setInstanceSupplier(instanceSupplier);
+		//得到类的作用域
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
+		//将作用域放入 AnnotatedGenericBeanDefinition
 		abd.setScope(scopeMetadata.getScopeName());
+		//创建bean的名称
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
-
+		//检查通用注解 lazy primary 等 加入 AnnotatedGenericBeanDefinition
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
+
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
 				if (Primary.class == qualifier) {
@@ -241,9 +249,19 @@ public class AnnotatedBeanDefinitionReader {
 		for (BeanDefinitionCustomizer customizer : definitionCustomizers) {
 			customizer.customize(abd);
 		}
-
+		/**
+		 * 是一个map 里面存放了 AnnotatedGenericBeanDefinition 和Beanname
+		 */
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+		//把 BeanDefinitionHolder
+		/**
+		 * registy就是AnnotationConfigApplicationContext
+		 * AnnotationConfigApplicationContext 初始化的时候调用父类的构造方法
+		 * 实例化了一个DefaultListableBeanFactory
+		 * registerBeanDefinition（）里面就是把definitionHolder这个数据结构包含的信息
+		 * 注册到DefaultListableBeanFactory
+		 */
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}
 
