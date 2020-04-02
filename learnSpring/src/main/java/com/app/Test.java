@@ -14,5 +14,10 @@ public class Test {
 		AppDao dao = context.getBean(AppDao.class);
 		dao.get();
 
+
+
+		AnnotationConfigApplicationContext context1 =
+				new AnnotationConfigApplicationContext();
+
 	}
 }

@@ -1,10 +1,24 @@
 package com.dao;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class AppDao {
+public class AppDao implements ApplicationContextAware {
+	private ApplicationContext applicationContext;
+
 	public void get(){
 		System.out.println("11111111");
+		/***
+		 * 获取一个原型对象
+		 */
+		applicationContext.getApplicationName("qqq");
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+			this.applicationContext = applicationContext;
 	}
 }

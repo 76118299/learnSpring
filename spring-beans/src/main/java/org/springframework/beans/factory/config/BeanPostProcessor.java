@@ -20,6 +20,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
 /**
+ *  我们可以通过实现BeanPostProcessor接口 来插手Bean的实例化 从而减轻BeanFactory的负担
  * Factory hook that allows for custom modification of new bean instances,
  * e.g. checking for marker interfaces or wrapping them with proxies.
  *
