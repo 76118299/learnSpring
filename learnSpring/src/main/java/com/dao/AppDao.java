@@ -5,6 +5,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Repository;
 
+/**
+ * 实现ApplicationContextAwar
+ * 获取的都spring应用上下文
+ */
 @Repository
 public class AppDao implements ApplicationContextAware {
 	private ApplicationContext applicationContext;
@@ -14,7 +18,7 @@ public class AppDao implements ApplicationContextAware {
 		/***
 		 * 获取一个原型对象
 		 */
-		applicationContext.getApplicationName("qqq");
+		applicationContext.getApplicationName();
 	}
 
 	@Override

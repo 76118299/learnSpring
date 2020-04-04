@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Proxy;
 
 /**
- * BeanPostPorcessor Bean的后置处理器
- * PriorityOrdered 定义类的初始化顺序
+ * 通过实现BeanPostProcessor
+ * 可以对Bean进行修改 例如修改成代理对象、
+ * 能够插手Bean的实例化
  */
 @Component
 public class TestBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {
