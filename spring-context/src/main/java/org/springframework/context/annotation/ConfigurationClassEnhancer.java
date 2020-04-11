@@ -30,6 +30,7 @@ import org.springframework.asm.Type;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -74,6 +75,8 @@ class ConfigurationClassEnhancer {
 
 	// The callbacks to use. Note that these callbacks must be stateless.
 	private static final Callback[] CALLBACKS = new Callback[] {
+			//争强方法控制Bean的作用域
+			//不每次都调用new
 			new BeanMethodInterceptor(),
 			new BeanFactoryAwareMethodInterceptor(),
 			NoOp.INSTANCE
@@ -94,7 +97,9 @@ class ConfigurationClassEnhancer {
 	 * container-aware callbacks capable of respecting scoping and other bean semantics.
 	 * @return the enhanced subclass
 	 */
+
 	public Class<?> enhance(Class<?> configClass, @Nullable ClassLoader classLoader) {
+		//判断@configuration是否被代理过
 		if (EnhancedConfiguration.class.isAssignableFrom(configClass)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(String.format("Ignoring request to enhance %s as it has " +
@@ -345,7 +350,7 @@ class ConfigurationClassEnhancer {
 					return enhanceFactoryBean(factoryBean, beanMethod.getReturnType(), beanFactory, beanName);
 				}
 			}
-
+			//判断执行方法和调用方法是不是同一个方法
 			if (isCurrentlyInvokedFactoryMethod(beanMethod)) {
 				// The factory is calling the bean method in order to instantiate and register the bean
 				// (i.e. via a getBean() call) -> invoke the super implementation of the method to actually

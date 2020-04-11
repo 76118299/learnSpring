@@ -78,6 +78,12 @@ abstract class ConfigurationClassUtils {
 	 * @param metadataReaderFactory the current factory in use by the caller
 	 * @return whether the candidate qualifies as (any kind of) configuration class
 	 */
+	/**
+	 * 这个方法首先判断 是否加了注解，然后再判断加了什么注解
+	 * @param beanDef
+	 * @param metadataReaderFactory
+	 * @return
+	 */
 	public static boolean checkConfigurationClassCandidate(
 			BeanDefinition beanDef, MetadataReaderFactory metadataReaderFactory) {
 
@@ -112,7 +118,10 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 		//判断是否加了@Configuratino注解
+		//如果存在spring认为它是一个全注解的类
+		//否则spring认为是一个部分注解类
 		if (isFullConfigurationCandidate(metadata)) {
+			//如果存在@configuration注解 则BeanDefinition 设置 configurationClass属性为full
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
 		/**
@@ -121,8 +130,11 @@ abstract class ConfigurationClassUtils {
 		 * 		candidateIndicators.add(ComponentScan.class.getName());
 		 * 		candidateIndicators.add(Import.class.getName());
 		 * 		candidateIndicators.add(ImportResource.class.getName());
+		 * 	lite spring认为它是一个部分注解类
 		 */
 		else if (isLiteConfigurationCandidate(metadata)) {
+			//如果既有@configuration注解 又有 @componentScan 那么 @componentScan 会放到解析类的时候进行处理。 如果没有 @configuration spring就会单独进行解析
+			//如果不存在@configuration注解 则BeanDefinition 设置 configurationClass属性为lite
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
 		else {

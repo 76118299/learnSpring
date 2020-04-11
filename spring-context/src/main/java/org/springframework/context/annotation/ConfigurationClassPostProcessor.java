@@ -256,7 +256,11 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			// Simply call processConfigurationClasses lazily at this point then.
 			processConfigBeanDefinitions((BeanDefinitionRegistry) beanFactory);
 		}
-
+		/**
+		 * 产生cglib代理
+		 *有@configuration 就会代理
+		 * 没有就不会
+		 */
 		enhanceConfigurationClasses(beanFactory);
 		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory));
 	}
@@ -272,8 +276,12 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 		for (String beanName : candidateNames) {
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
-			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef) ||
-					ConfigurationClassUtils.isLiteConfigurationClass(beanDef)) {
+
+			/**
+			 * FULL
+			 * LITE
+			 */
+			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef) || ConfigurationClassUtils.isLiteConfigurationClass(beanDef)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
@@ -336,7 +344,11 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
-
+			/**
+			 * 注册@Bean
+			 * 和import
+			 * 除了@Compontent的Bean
+			 */
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 
@@ -380,10 +392,15 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * Candidate status is determined by BeanDefinition attribute metadata.
 	 * @see ConfigurationClassEnhancer
 	 */
+
 	public void enhanceConfigurationClasses(ConfigurableListableBeanFactory beanFactory) {
 		Map<String, AbstractBeanDefinition> configBeanDefs = new LinkedHashMap<>();
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
 			BeanDefinition beanDef = beanFactory.getBeanDefinition(beanName);
+			/**
+			 * 判断这个类是不是一个全注解
+			 * full 和lite的关系
+			 */
 			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef)) {
 				if (!(beanDef instanceof AbstractBeanDefinition)) {
 					throw new BeanDefinitionStoreException("Cannot enhance @Configuration bean definition '" +

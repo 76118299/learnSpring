@@ -24,6 +24,7 @@ public class Test {
 		AnnotationConfigApplicationContext context1 =
 				new AnnotationConfigApplicationContext();
 		context1.register(Appconfig.class);
+		context1.scan("com");
 
 	}
 }

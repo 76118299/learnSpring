@@ -64,6 +64,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public AnnotationConfigApplicationContext() {
 		//初始化读取器 读取被加了注解的Bean
+		// 主要是初始化了ConfigurationClassPostProcessor 对象 用来处理 加了@configuration的对象类
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		//初始化扫描器 扫描所有加了注解的Bean
 		this.scanner = new ClassPathBeanDefinitionScanner(this);

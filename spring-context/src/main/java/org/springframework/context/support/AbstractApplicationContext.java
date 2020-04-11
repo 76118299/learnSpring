@@ -82,6 +82,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
+import javax.annotation.PostConstruct;
+
 /**
  * Abstract implementation of the {@link org.springframework.context.ApplicationContext}
  * interface. Doesn't mandate the type of storage used for configuration; simply
@@ -531,17 +533,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 				/**
-				 * 执行后置处理器
+				 * 执行自定义或者 spring的 BeanFacoryPostProcessor 的实现
 				 */
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
-
+				/**
+				 * 注册Bean的拦截器 7个
+				 * BenaPostProcessor
+				 */
 				// Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
 				initMessageSource();
-
+				/**
+				 * 初始化应用广播事件
+				 */
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
 
@@ -550,6 +557,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Check for listener beans and register them.
 				registerListeners();
+
 
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
@@ -714,6 +722,18 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+
+		/**
+		 * 三种情况的处理器
+		 * 1.spring自己的
+		 * 2.自定义的 并添加了@compontent注解
+		 * 3.自定义的 没有添加@compontent
+		 * 如果加了 getBeanFactoryPostProcessors()得不到 spring自己扫描的
+		 *
+		 * 没有添加 需要手动添加
+		 * AppicationContext.addBeanFoactoryPorcessor()
+		 *
+		 */
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
@@ -884,7 +904,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Allow for caching all bean definition metadata, not expecting further changes.
 		beanFactory.freezeConfiguration();
-
+		/**
+		 * 实例化单例对象之前要做的事情
+		 */
 		// Instantiate all remaining (non-lazy-init) singletons.
 		beanFactory.preInstantiateSingletons();
 	}

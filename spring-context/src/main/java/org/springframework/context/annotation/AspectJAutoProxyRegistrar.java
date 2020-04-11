@@ -31,6 +31,12 @@ import org.springframework.core.type.AnnotationMetadata;
  * @since 3.1
  * @see EnableAspectJAutoProxy
  */
+
+/**
+ * ImportBeanDefinitionRegistrar 接口
+ * 动态加载了aop的后置处理器 BeanPostProcessor 接口的实现类 AnnotationAutoProxyCreator
+ *
+ */
 class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 
 	/**
@@ -41,7 +47,7 @@ class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 	@Override
 	public void registerBeanDefinitions(
 			AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-
+        //添加后置处理器 注册到BeanDefinition Map中  AnnotationAutoProxyCreator  处理aop
 		AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(registry);
 
 		AnnotationAttributes enableAspectJAutoProxy =

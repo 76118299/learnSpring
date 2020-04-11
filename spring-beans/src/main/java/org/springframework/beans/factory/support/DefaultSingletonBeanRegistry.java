@@ -219,6 +219,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					/**
+					 * 对象被创建出来了并执行后置处理器
+					 */
+
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}

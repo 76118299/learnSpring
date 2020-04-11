@@ -91,6 +91,7 @@ final class PostProcessorRegistrationDelegate {
 			String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			/**
 			 * 将通过名字得到spring内置的后置处理器
+			 * 从BeanFactory的map中获取
 			 * 存入 currentRegistryProcessors list
 			 */
 			for (String ppName : postProcessorNames) {
@@ -102,10 +103,12 @@ final class PostProcessorRegistrationDelegate {
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			//合并list
 			registryProcessors.addAll(currentRegistryProcessors);
-
+			//执行所有的BeanDefinitionRegistryPostProcessors
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
-
+			/**
+			 * 下面是排除执行过的
+			 */
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
@@ -134,12 +137,19 @@ final class PostProcessorRegistrationDelegate {
 				}
 				sortPostProcessors(currentRegistryProcessors, beanFactory);
 				registryProcessors.addAll(currentRegistryProcessors);
+
 				invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 				currentRegistryProcessors.clear();
 			}
 
+
+			/**
+			 * 执行  BeanDefinitionRegistryPostProcessor 父类的 BenaFactoryPostProcessors # postProcessBeanFactory ()
+			 */
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
+			//执行自定义的
+			//执行BenaFactoryPostProcessors# postProcessBeanFactory ()
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
 		}
 
