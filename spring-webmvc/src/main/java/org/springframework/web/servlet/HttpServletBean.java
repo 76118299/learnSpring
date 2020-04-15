@@ -139,6 +139,11 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		return new StandardServletEnvironment();
 	}
 
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+	}
+
 	/**
 	 * Map config parameters onto bean properties of this servlet, and
 	 * invoke subclass initialization.

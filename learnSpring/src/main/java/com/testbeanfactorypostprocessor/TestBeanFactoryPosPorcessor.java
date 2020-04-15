@@ -6,7 +6,7 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 /**
- *
+ *可以对BeanDefinition进行修改
  */
 public class TestBeanFactoryPosPorcessor implements BeanFactoryPostProcessor {
 	@Override

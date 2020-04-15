@@ -534,6 +534,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				postProcessBeanFactory(beanFactory);
 				/**
 				 * 执行自定义或者 spring的 BeanFacoryPostProcessor 的实现
+				 * 和自定义的BeanFacoryPostProcessor
 				 */
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
@@ -905,7 +906,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Allow for caching all bean definition metadata, not expecting further changes.
 		beanFactory.freezeConfiguration();
 		/**
-		 * 实例化单例对象之前要做的事情
+		 * 实例化单例对象之前要做的事情 即实例化所有的单例对象
 		 */
 		// Instantiate all remaining (non-lazy-init) singletons.
 		beanFactory.preInstantiateSingletons();

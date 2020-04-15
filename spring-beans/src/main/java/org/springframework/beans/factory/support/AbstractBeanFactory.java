@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import groovy.lang.Lazy;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeansException;
@@ -238,15 +239,23 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	@SuppressWarnings("unchecked")
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
-
+		/**
+		 * 出来 beanName 中 &的字符
+		 */
 		final String beanName = transformedBeanName(name);
 		Object bean;
 
 		// Eagerly check singleton cache for manually registered singletons.
 		/**
 		 * spring 在初始化Bean实例之前要先去拿一遍r
-		 * 如果没有则实例化
+		 * 如果没有则实例化 则是懒加载
+		 * 	@Lazy 是不会跟随容器启动初始化的 。而实调用时候 。这个对象为null 说明是懒加载
+		 * 	则进行创建对象
+		 * 	getBean的时候 又一次init初始化
+		 *
+		 * 	还有一层意义 就是 spring认为还没有到创建对象的时候。如果为有对象说明做了验证，没有则创建对象
 		 */
+
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
@@ -291,6 +300,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			if (!typeCheckOnly) {
+				/**
+				 * 标记Bean已经创建过一次
+				 */
 				markBeanAsCreated(beanName);
 			}
 
@@ -319,8 +331,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// Create bean instance.
 				if (mbd.isSingleton()) {
+
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
+							/**
+							 * 开始创建
+							 */
 							return createBean(beanName, mbd, args);
 						}
 						catch (BeansException ex) {

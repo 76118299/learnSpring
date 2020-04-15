@@ -11,8 +11,10 @@ import java.lang.reflect.Proxy;
 /**
  * FacotryBean 接口会注册2个对象一个是它自己
  * 一个是getObject返回的对象
+ * 可以使用@Componetn
+ * 也可使用ImportBeanDefintinoRegistrar
  */
-
+//@Component
 public class MyFactoryBean implements FactoryBean,InvocationHandler {
 	public MyFactoryBean(Class clazz) {
 		this.clazz = clazz;
