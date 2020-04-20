@@ -15,10 +15,12 @@ public class SpringApplication {
 			tomcat.setPort(6666);
 			/**
 			 * spring认为它不是web程序
+			 * contextPath 表示tomcat的访问路径
+			 * docBase 表示项目的web目录
 			 */
 			tomcat.addContext("/","d:/test");
 			/**
-			 * spring认为它是web程序
+			 * spring认为它是web程序 如果请求中包含 / 这回去 d:/test 中寻找index.html
 			 */
 			//tomcat.addWebapp("/","d:/test");
 			//初始化spring
