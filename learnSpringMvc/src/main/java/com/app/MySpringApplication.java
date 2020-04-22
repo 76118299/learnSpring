@@ -40,6 +40,12 @@ public class MySpringApplication {
 		tomcat.start();
 		tomcat.getServer().await();
 
+		/**
+		 * addWebapp表示当前项目是一个web项目
+		 * contextPath  第一个参数 “/” tomcat的访问路径
+		 * docBase 第二个参数 项目的web目录 index.html
+		 */
+		tomcat.addWebapp("/","src/main/webapp");
 
 //		String path = MySpringApplication.class.getResource("/").getPath();
 //		//告诉tomcat源码再哪里

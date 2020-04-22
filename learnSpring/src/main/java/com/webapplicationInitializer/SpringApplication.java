@@ -32,7 +32,10 @@ public class SpringApplication {
 			DispatcherServlet dispatcherServlet = new DispatcherServlet(ac);
 			//加载servlet
 			Wrapper mvc = tomcat.addServlet("/", "mvc", dispatcherServlet);
-			//这个时候会调用DispathcerServlet的init()方法 初始化spring容器
+			/**
+			 * tomCat启动时候会调用DispathcerServlet的init()方法 初始化spring容器
+			 * 初始化 Controller 和请求映射
+			 */
 			mvc.setLoadOnStartup(1);
 			mvc.addMapping("*.do");
 
